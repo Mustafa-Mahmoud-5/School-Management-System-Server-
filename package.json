@@ -1,0 +1,23 @@
+{
+  "name": "shcool-managment-system",
+  "version": "1.0.0",
+  "description": "a system that controls too many things a school manager can do",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Mustafa Mahmoud",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "helmet": "^3.23.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.9"
+  }
+}
