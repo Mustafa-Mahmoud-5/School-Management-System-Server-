@@ -30,8 +30,6 @@ router.post(
 			try {
 				const student = await Student.getStudentWithCondition({ email: value });
 				if (student) {
-					console.log('student2', student);
-
 					return Promise.reject('This email is taken by some student');
 				}
 				const teacher = await Teacher.getTeacherWithCondition({ email: value });
@@ -43,7 +41,6 @@ router.post(
 				error.statusCode = 500;
 				throw error;
 			}
-			// console.log('student1', student);
 		})
 	],
 	settingsControllers.postAddStudent

@@ -24,7 +24,6 @@ class Student {
 
 	// search for student can be tricky because we have firstName and lastName and we know that text index can be added to only one element, hence we have an option, we can give the text index to first name and this query will return students whose first name match the given text another option is to make a combined search index for firstName and lastName and that what i used
 	static searchForStudents = searchText => {
-		console.log('Student -> searchText', searchText);
 		return db()
 			.collection(collectionName)
 			.aggregate([

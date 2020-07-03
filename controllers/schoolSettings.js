@@ -20,7 +20,6 @@ exports.getGetStudents = async (req, res, next) => {
 
 exports.getGetStudent = async (req, res, next) => {
 	const studentId = req.params.studentId;
-	console.log('reached studentId>>>>', studentId);
 	try {
 		const student = await Student.getStudentAggregated(studentId);
 		if (!student) {
@@ -55,7 +54,6 @@ exports.postAddStudent = async (req, res, next) => {
 
 		const addingResult = await student.addStudent();
 		const [ insertedStudent ] = addingResult.ops;
-		console.log('exports.postAddStudent -> addingResult', addingResult);
 
 		res.status(201).json({ message: 'Student added successfully', studentId: insertedStudent._id.toString() });
 	} catch (error) {
@@ -123,9 +121,7 @@ exports.deleteDeleteStudent = async (req, res, next) => {
 		const studentClassId = student.classId;
 		// the student has a classId (not null)
 
-		console.log('exports.deleteDeleteStudent1 -> studentClassId', studentClassId);
 		if (studentClassId) {
-			console.log('exports.deleteDeleteStudent2 -> studentClassId', studentClassId);
 			await Class.editClassWithCondition(
 				{ _id: new ObjectId(studentClassId) },
 				{ $pull: { students: new ObjectId(studentId) } }
@@ -155,7 +151,6 @@ exports.getGetClasses = async (req, res, next) => {
 
 exports.postAddClass = async (req, res, next) => {
 	const className = req.body.name;
-	console.log('exports.postAddClass -> className', className);
 
 	const newClass = new Class(className, []);
 
@@ -258,7 +253,6 @@ exports.deleteRemoveClass = async (req, res, next) => {
 };
 
 exports.patchAddStudentToClass = async (req, res, next) => {
-	console.log('exports.postAddStudentToClass -> rached');
 	const { classId, studentId } = req.body;
 
 	try {
@@ -375,7 +369,6 @@ exports.getSearchForClasses = async (req, res, next) => {
 
 exports.getSearchForStudents = async (req, res, next) => {
 	const searchText = req.params.text;
-	console.log('exports.getSearchForStudents -> searchText', searchText);
 
 	try {
 		const foundStudents = await Student.searchForStudents(searchText);
@@ -388,13 +381,10 @@ exports.getSearchForStudents = async (req, res, next) => {
 
 exports.getSearchForStudentsInClass = async (req, res, next) => {
 	const { searchText, classId } = req.query;
-	console.log('exports.getSearchForStudentsInClass -> searchText', searchText);
-	console.log('exports.getSearchForStudentsInClass -> classId', classId);
 
 	try {
 		// check if the class exist(not fake)
 		const foundClass = await Class.getClass(classId);
-		console.log('exports.getSearchForStudentsInClass -> foundClass', foundClass);
 		if (!foundClass) {
 			const error = new Error('This class does not exist');
 			error.statusCode = 404;
@@ -411,7 +401,6 @@ exports.getSearchForStudentsInClass = async (req, res, next) => {
 
 exports.getSearchForTeachers = async (req, res, next) => {
 	const searchText = req.params.text;
-	console.log('exports.getSearchForTeachers -> searchText', searchText);
 	try {
 		const teachers = await Teacher.searchForTeacher(searchText);
 		res.status(200).json({ teachers: teachers });
@@ -435,7 +424,6 @@ exports.getSearchForSubjects = async (req, res, next) => {
 
 exports.postAddSubject = async (req, res, next) => {
 	const { name } = req.body;
-	console.log('exports.postAddSubject -> name', name);
 
 	const subject = new Subject(name.toLowerCase(), []);
 
@@ -488,7 +476,6 @@ exports.deleteRemoveSubject = async (req, res, next) => {
 		// before removing the subject, we need to get the subject teachers ids and remove the subject id from them
 
 		if (foundSubject.teachers.length > 0) {
-			console.log('we didn`t enter this part');
 			const teachersIds = foundSubject.teachers.map(teacherId => new ObjectId(teacherId));
 
 			await Teacher.updateTeachersWithConfigs({ _id: { $in: teachersIds } }, { $set: { subjectId: null } });
@@ -504,11 +491,9 @@ exports.deleteRemoveSubject = async (req, res, next) => {
 
 exports.getSingleSubject = async (req, res, next) => {
 	const { subjectId } = req.params;
-	console.log('exports.getSingleSubject -> subjectId', subjectId);
 
 	try {
 		const subject = await Subject.getSingleSubjectAggregated(subjectId);
-		console.log('exports.getSingleSubject -> subject', subject);
 
 		if (!subject) {
 			const error = new Error('Subject with given id does not exist');
@@ -659,7 +644,6 @@ exports.patchEditTeacher = async (req, res, next) => {
 
 		// this teacher has no id (this happened because the admin removed a subject he included in), go and add the teacherId to the given subjectId teachers array
 
-		console.log('exports.patchEditTeacher -> foundTeacher', foundTeacher);
 		if (foundTeacher.subjectId === null) {
 			await Subject.updateSubjectWithConfigs(
 				{ _id: new ObjectId(subjectId) },

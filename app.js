@@ -28,7 +28,6 @@ app.use((error, req, res, next) => {
 	const errorMessage = error.message ? error.message : 'something went wrong';
 	const errorStatusCode = error.statusCode;
 
-	console.log('errorMessage', error.message);
 	res.status(errorStatusCode).json({ error: errorMessage });
 });
 
