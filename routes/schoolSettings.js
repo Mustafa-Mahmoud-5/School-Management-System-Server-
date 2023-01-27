@@ -151,7 +151,23 @@ router.get('/subjects/search/:text', settingsControllers.getSearchForSubjects);
 // POST @ /settings/subjects
 router.post(
 	'/subjects',
-	[ body('name', 'Subject must not be empty and only in characters').trim().notEmpty().isAlpha() ],
+	[
+		body('name', 'Subject name must not be empty and lowercase')
+			.trim()
+			.notEmpty()
+			.isLowercase()
+			.custom(async value => {
+				try {
+					const subject = await Subject.getSubjectWithCondition({ name: value });
+					if (subject) {
+						return Promise.reject('There exists a subject with this name.');
+					}
+					return true;
+				} catch (error) {
+					throw error;
+				}
+			})
+	],
 	settingsControllers.postAddSubject
 );
 
@@ -162,14 +178,20 @@ router.get('/subject/:subjectId', settingsControllers.getSingleSubject);
 router.patch(
 	'/subjects/edit',
 	[
-		body('newName', 'newName must not be null, only in characters')
+		body('newName', 'new name must not be empty and lowercase')
 			.trim()
 			.notEmpty()
-			.isAlpha()
+			.isLowercase()
 			.custom(async value => {
-				const foundSubject = await Subject.getSubjectWithCondition({ name: value });
-				if (foundSubject) return Promise.reject('this name is already taken');
-				return true;
+				try {
+					const subject = await Subject.getSubjectWithCondition({ name: value });
+					if (subject) {
+						return Promise.reject('There exists a subject with this name.');
+					}
+					return true;
+				} catch (error) {
+					throw error;
+				}
 			})
 	],
 	settingsControllers.patchEditSubjectName

@@ -11,13 +11,10 @@ class Subject {
 	}
 
 	addSubject = () => {
-		console.log(typeof this.name);
 		return db().collection(collectionName).insertOne(this);
 	};
 
 	static getSingleSubjectAggregated = subjectId => {
-		console.log('we made it here');
-
 		return db()
 			.collection(collectionName)
 			.aggregate([
@@ -40,6 +37,7 @@ class Subject {
 	};
 
 	static getSubjectsAggregated = () => {
+		//
 		return db()
 			.collection(collectionName)
 			.aggregate([

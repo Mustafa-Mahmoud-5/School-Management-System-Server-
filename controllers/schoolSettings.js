@@ -1,7 +1,6 @@
 const Student = require('../models/student');
 const Class = require('../models/class');
 const Subject = require('../models/subject');
-const Teachewr = require('../models/teacher');
 const { validationResult } = require('express-validator');
 const { ObjectId } = require('mongodb');
 const Teacher = require('../models/teacher');
@@ -274,12 +273,10 @@ exports.patchAddStudentToClass = async (req, res, next) => {
 			throw error;
 		}
 		// if you are trying to add a student who is already in a class
-		if (student) {
-			if (student.classId !== null) {
-				const error = new Error('You are trying to add a student who is really exist');
-				error.statusCode = 403;
-				throw error;
-			}
+		if (student.classId !== null) {
+			const error = new Error('You are trying to add a student who is really exist');
+			error.statusCode = 403;
+			throw error;
 		}
 
 		// add the student to the class students array
@@ -319,12 +316,10 @@ exports.patchremoveStudentFromClass = async (req, res, next) => {
 		}
 
 		// check if this class has students
-		if (foundClass) {
-			if (foundClass.students.length < 1) {
-				const error = new Error('You are trying to remove a student from a class that has no students!!');
-				error.statusCode = 500;
-				throw error;
-			}
+		if (foundClass.students.length === 0) {
+			const error = new Error('You are trying to remove a student from a class that has no students!!');
+			error.statusCode = 500;
+			throw error;
 		}
 
 		const student = await Student.getStudent(studentId);
@@ -578,7 +573,7 @@ exports.postAddTeacher = async (req, res, next) => {
 			{ $addToSet: { teachers: insertedId } }
 		);
 
-		res.status(201).json({ message: 'Teacher added successfully', teacherId: insertedId.toString() });
+		res.status(201).json({ message: 'Teacher is added successfully', teacherId: insertedId.toString() });
 	} catch (error) {
 		if (!error.statusCode) error.statusCode = 500;
 		next(error);
